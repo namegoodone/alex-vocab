@@ -9,28 +9,30 @@
 /* ===== 0. 重置 & 字体 ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:#333;line-height:1.6;background:linear-gradient(135deg,#FF4500 0%,#FFD700 100%);min-height:100vh;padding:10px}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:#333;line-height:1.6;background:linear-gradient(135deg,#6a0dad 0%,#8a2be2 100%);min-height:100vh;padding:10px}
 
 /* ===== 1. 加载动画 ===== */
 .loader{position:fixed;inset:0;background:#fff;z-index:9999;display:flex;align-items:center;justify-content:center;transition:.3s}
 .loader.hide{opacity:0;pointer-events:none}
-.loader::after{content:"";width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid #FF4500;border-radius:50%;animation:spin 1s linear infinite}
+.loader::after{content:"";width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid #6a0dad;border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ===== 2. 布局容器（橙红底 + 720×876 GIF）===== */
+/* ===== 2. 布局容器 ===== */
+/* ===== 晨曦薄雾橙玻璃容器 ===== */
 .container{
-  max-width:720px;
+  max-width:750px;
   margin:0 auto;
-  background:#FF4500 url("https://raw.githubusercontent.com/namegoodone/07C-2025/main/background.gif") center top/cover no-repeat;
+  background:rgba(255, 200, 150, 0.25);   /* 极浅晨曦橙 */
+  border:1px solid rgba(255, 215, 0, 0.3); /* 淡金描边 */
   border-radius:20px;
   overflow:hidden;
   box-shadow:0 10px 30px rgba(0,0,0,.2);
   position:relative;
+  backdrop-filter:blur(6px);               /* 柔化玻璃 */
 }
-
-/* ===== 3. 顶部横幅（旭日橙→金）===== */
-.header{background:linear-gradient(135deg,#FF4500 0%,#FFD700 100%);color:#fff;text-align:center;padding:50px 20px 40px;position:relative;overflow:hidden}
-.header::before,.header::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.15)}
+/* ===== 3. 顶部横幅 ===== */
+.header{background:linear-gradient(135deg,#6a0dad 0%,#8a2be2 100%);color:#fff;text-align:center;padding:50px 20px 40px;position:relative;overflow:hidden}
+.header::before,.header::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.1)}
 .header::before{top:-50px;right:-50px;width:150px;height:150px}
 .header::after{bottom:-30px;left:-30px;width:100px;height:100px}
 .title{font-size:24px;font-weight:bold;margin-bottom:10px;position:relative;z-index:1;text-shadow:1px 1px 3px rgba(0,0,0,.3)}
@@ -39,16 +41,16 @@ body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:#333;line-heig
 /* ===== 4. 内容区 ===== */
 .content{padding:35px 25px}
 .greeting{text-align:center;margin-bottom:25px}
-.salutation{font-size:20px;color:#FF4500;font-weight:bold;display:inline-block;position:relative}
-.salutation::after{content:"";position:absolute;left:10%;bottom:-5px;width:80%;height:2px;background:linear-gradient(90deg,transparent,#FF4500,transparent)}
+.salutation{font-size:20px;color:#6a0dad;font-weight:bold;display:inline-block;position:relative}
+.salutation::after{content:"";position:absolute;left:10%;bottom:-5px;width:80%;height:2px;background:linear-gradient(90deg,transparent,#6a0dad,transparent)}
 .message{font-size:16px;text-align:justify;margin-bottom:18px;text-indent:2em}
 .highlight{color:#e67e22;font-weight:bold}
 
-/* ===== 5. 信息卡片（橙金边）===== */
-/* ===== 活动信息（橙红玻璃）===== */
+/* ===== 5. 信息卡片 ===== */
+./* ===== 活动信息（薄雾橙玻璃）===== */
 .event-info{
-  background:rgba(255,69,0,.18);
-  border:1px solid rgba(255,215,0,.35);
+  background:rgba(255, 200, 150, 0.25);
+  border:1px solid rgba(255, 215, 0, 0.3);
   border-radius:12px;
   padding:20px;
   margin:30px 0;
@@ -61,18 +63,18 @@ body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:#333;line-heig
   top:0;
   width:5px;
   height:100%;
-  background:linear-gradient(to bottom,#FF4500,#FFD700);
+  background:linear-gradient(to bottom,#FFD700,#FF4500);
 }
-.info-title{font-size:18px;color:#FF4500;margin-bottom:15px;display:flex;align-items:center}
+.info-title{font-size:18px;color:#6a0dad;margin-bottom:15px;display:flex;align-items:center}
 .info-title i{margin-right:10px;font-size:20px}
 .date,.location{font-size:16px;margin-bottom:10px;display:flex;align-items:center}
-.date i,.location i{margin-right:10px;color:#FF4500;width:24px;text-align:center}
+.date i,.location i{margin-right:10px;color:#6a0dad;width:24px;text-align:center}
 
-/* ===== 6. 温馨提示（暖黄）===== */
-/* ===== 温馨提示（晨曦黄玻璃）===== */
+/* ===== 6. 温馨提示 ===== */
+/* ===== 温馨提示（薄雾橙玻璃）===== */
 .reminder{
-  background:rgba(255,215,0,.15);
-  border:1px solid rgba(255,215,0,.4);
+  background:rgba(255, 200, 150, 0.25);
+  border:1px solid rgba(255, 215, 0, 0.3);
   border-radius:12px;
   padding:18px;
   margin:25px 0;
@@ -92,58 +94,46 @@ body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:#333;line-heig
 .reminder-detail{font-size:15px;color:#666;line-height:1.5}
 
 /* ===== 7. 二维码区域 ===== */
-/* ===== 二维码区域（橙红玻璃）===== */
+/* ===== 二维码区域（薄雾橙玻璃）===== */
 .qrcode-section{
   text-align:center;
   margin:35px 0;
   padding:25px 20px;
-  background:rgba(255,69,0,.15);
-  border:1px solid rgba(255,215,0,.35);
+  background:rgba(255, 200, 150, 0.25);
+  border:1px solid rgba(255, 215, 0, 0.3);
   border-radius:15px;
 }
-.qrcode-title{font-size:18px;color:#FF4500;margin-bottom:20px;font-weight:bold}
+.qrcode-title{font-size:18px;color:#6a0dad;margin-bottom:20px;font-weight:bold}
 .qrcode-placeholder{width:200px;height:200px;margin:0 auto;background:linear-gradient(135deg,#f5f5f5,#e0e0e0);display:flex;align-items:center;justify-content:center;border-radius:10px;color:#999;font-size:14px;border:1px dashed #ccc;position:relative;overflow:hidden}
-.qrcode-placeholder::before{content:"";position:absolute;width:100%;height:100%;background:linear-gradient(45deg,transparent 49%,rgba(255,69,0,.1) 50%,transparent 51%),linear-gradient(-45deg,transparent 49%,rgba(255,69,0,.1) 50%,transparent 51%);background-size:20px 20px}
+.qrcode-placeholder::before{content:"";position:absolute;width:100%;height:100%;background:linear-gradient(45deg,transparent 49%,rgba(106,13,173,.1) 50%,transparent 51%),linear-gradient(-45deg,transparent 49%,rgba(106,13,173,.1) 50%,transparent 51%);background-size:20px 20px}
 .qrcode-desc{margin-top:15px;font-size:14px;color:#666}
 
 /* ===== 8. 结尾 & 底部 ===== */
 .closing{text-align:center;margin:35px 0 25px;color:#666}
 .closing p{margin-bottom:10px}
-.signature{margin-top:20px;font-weight:bold;color:#FF4500;font-size:18px;position:relative;display:inline-block;padding:0 15px}
+.signature{margin-top:20px;font-weight:bold;color:#6a0dad;font-size:18px;position:relative;display:inline-block;padding:0 15px}
 .signature::after,.signature::before{content:"✦";margin:0 10px;color:#e67e22}
-.footer{background:linear-gradient(135deg,#FF4500 0%,#FFD700 100%);color:#fff;text-align:center;padding:25px 20px;font-size:14px;position:relative;overflow:hidden}
-.footer::before{content:"";position:absolute;top:-20px;left:0;width:100%;height:20px;background:rgba(255,255,255,.15);border-radius:50% 50% 0 0}
+.footer{background:linear-gradient(135deg,#6a0dad 0%,#8a2be2 100%);color:#fff;text-align:center;padding:25px 20px;font-size:14px;position:relative;overflow:hidden}
+.footer::before{content:"";position:absolute;top:-20px;left:0;width:100%;height:20px;background:rgba(255,255,255,.1);border-radius:50% 50% 0 0}
 
-/* ===== 9. 装饰元素（金星）===== */
+/* ===== 9. 装饰元素 ===== */
 .decoration{position:absolute;z-index:1}
-.moon{top:20px;right:20px;width:60px;height:60px;background:#FFD700;border-radius:50%;box-shadow:0 0 20px rgba(255,215,0,.7);opacity:.9}
-.star{background:#FFD700;border-radius:50%;box-shadow:0 0 10px #FFD700;animation:twinkle 3s infinite alternate}
+.moon{top:20px;right:20px;width:60px;height:60px;background:#ffd700;border-radius:50%;box-shadow:0 0 20px rgba(255,215,0,.7);opacity:.9}
+.star{background:#fff;border-radius:50%;box-shadow:0 0 10px #fff;animation:twinkle 3s infinite alternate}
 .star1{top:15%;left:10%;width:4px;height:4px;animation-delay:.5s}
 .star2{top:25%;right:15%;width:3px;height:3px;animation-delay:1s}
 .star3{bottom:30%;left:20%;width:5px;height:5px;animation-delay:1.5s}
 .star4{bottom:20%;right:10%;width:4px;height:4px;animation-delay:2s}
 @keyframes twinkle{0%{opacity:.3}100%{opacity:1}}
 
-/* ===== 10. 返回顶部（橙黄）===== */
-#topBtn{position:fixed;bottom:20px;right:20px;background:#FF4500;color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25);opacity:0;transition:.3s;z-index:100}
+/* ===== 10. 返回顶部 ===== */
+#topBtn{position:fixed;bottom:20px;right:20px;background:#6a0dad;color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25);opacity:0;transition:.3s;z-index:100}
 #topBtn.show{opacity:1}
 
 /* ===== 11. 响应式 ===== */
 @media(max-width:480px){
 .title{font-size:20px}.subtitle{font-size:14px}.message{font-size:15px}
 .qrcode-placeholder{width:180px;height:180px}.content{padding:25px 20px}
-}
-  /* ===== 旭日金橙渐变标题 ===== */
-.salutation{
-  font-size:20px;
-  font-weight:bold;
-  display:inline-block;
-  position:relative;
-  background:linear-gradient(135deg,#FFD700 0%,#FF4500 100%);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-  text-shadow:0 2px 4px rgba(0,0,0,.15);
 }
 </style>
 </head>
@@ -184,7 +174,7 @@ body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:#333;line-heig
       <div class="location"><i>📍</i> 深圳 · 大湾区</div>
     </div>
 
-    <p class="message">每一位同学，都蕴藏着对07C班的独家记忆。请扫描下方二维码，填写07C班2025班级聚会报名表。</p>
+    <p class="message">每一位同学，都蕴藏着对07C班的独家记忆。请扫描下方二维码，填写2025班级聚会报名表。</p>
 
     <div class="reminder">
       <div class="reminder-title"><i>💡</i> 温馨提示</div>
