@@ -1,224 +1,169 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>07C班级聚会邀约</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07C班级聚会邀约</title>
+<meta name="color-scheme" content="light only">
+<style>
+/* ===== 0. 重置 & 字体 ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:#333;line-height:1.6;background:linear-gradient(135deg,#6a0dad 0%,#8a2be2 100%);min-height:100vh;padding:10px}
 
-    body {
-      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-      background: linear-gradient(135deg, #6a0dad 0%, #8a2be2 100%);
-      color: #333;
-      line-height: 1.6;
-      padding: 10px;
-      min-height: 100vh;
-    }
+/* ===== 1. 加载动画 ===== */
+.loader{position:fixed;inset:0;background:#fff;z-index:9999;display:flex;align-items:center;justify-content:center;transition:.3s}
+.loader.hide{opacity:0;pointer-events:none}
+.loader::after{content:"";width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid #6a0dad;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-    .container {
-      max-width: 750px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      position: relative;
-    }
+/* ===== 2. 布局容器 ===== */
+.container{max-width:750px;margin:0 auto;background:rgba(255,255,255,.95);border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.2);position:relative}
 
-    .header {
-      background: linear-gradient(135deg, #6a0dad 0%, #8a2be2 100%);
-      color: white;
-      padding: 40px 20px 30px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
+/* ===== 3. 顶部横幅 ===== */
+.header{background:linear-gradient(135deg,#6a0dad 0%,#8a2be2 100%);color:#fff;text-align:center;padding:50px 20px 40px;position:relative;overflow:hidden}
+.header::before,.header::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.1)}
+.header::before{top:-50px;right:-50px;width:150px;height:150px}
+.header::after{bottom:-30px;left:-30px;width:100px;height:100px}
+.title{font-size:24px;font-weight:bold;margin-bottom:10px;position:relative;z-index:1;text-shadow:1px 1px 3px rgba(0,0,0,.3)}
+.subtitle{font-size:16px;opacity:.9;position:relative;z-index:1}
 
-    .title {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      position: relative;
-      z-index: 1;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-    }
+/* ===== 4. 内容区 ===== */
+.content{padding:35px 25px}
+.greeting{text-align:center;margin-bottom:25px}
+.salutation{font-size:20px;color:#6a0dad;font-weight:bold;display:inline-block;position:relative}
+.salutation::after{content:"";position:absolute;left:10%;bottom:-5px;width:80%;height:2px;background:linear-gradient(90deg,transparent,#6a0dad,transparent)}
+.message{font-size:16px;text-align:justify;margin-bottom:18px;text-indent:2em}
+.highlight{color:#e67e22;font-weight:bold}
 
-    .subtitle {
-      font-size: 16px;
-      opacity: 0.9;
-      position: relative;
-      z-index: 1;
-      margin-bottom: 5px;
-    }
+/* ===== 5. 信息卡片 ===== */
+.event-info{background:#f9f5ff;border:1px solid #e0d6f5;border-radius:12px;padding:20px;margin:30px 0;position:relative}
+.event-info::before{content:"";position:absolute;left:0;top:0;width:5px;height:100%;background:linear-gradient(to bottom,#6a0dad,#8a2be2)}
+.info-title{font-size:18px;color:#6a0dad;margin-bottom:15px;display:flex;align-items:center}
+.info-title i{margin-right:10px;font-size:20px}
+.date,.location{font-size:16px;margin-bottom:10px;display:flex;align-items:center}
+.date i,.location i{margin-right:10px;color:#6a0dad;width:24px;text-align:center}
 
-    .content {
-      padding: 30px 25px;
-    }
+/* ===== 6. 温馨提示 ===== */
+.reminder{background:#fff9e6;border:1px solid #ffd966;border-radius:12px;padding:18px;margin:25px 0;position:relative}
+.reminder::before{content:"";position:absolute;left:0;top:0;width:5px;height:100%;background:linear-gradient(to bottom,#e67e22,#f39c12)}
+.reminder-title{font-size:16px;color:#e67e22;margin-bottom:12px;display:flex;align-items:center}
+.reminder-title i{margin-right:10px}
+.reminder-detail{font-size:15px;color:#666;line-height:1.5}
 
-    .salutation {
-      font-size: 20px;
-      color: #6a0dad;
-      margin-bottom: 15px;
-      font-weight: bold;
-      text-align: center;
-    }
+/* ===== 7. 二维码区域 ===== */
+.qrcode-section{text-align:center;margin:35px 0;padding:25px 20px;background:#f9f5ff;border-radius:15px}
+.qrcode-title{font-size:18px;color:#6a0dad;margin-bottom:20px;font-weight:bold}
+.qrcode-placeholder{width:200px;height:200px;margin:0 auto;background:linear-gradient(135deg,#f5f5f5,#e0e0e0);display:flex;align-items:center;justify-content:center;border-radius:10px;color:#999;font-size:14px;border:1px dashed #ccc;position:relative;overflow:hidden}
+.qrcode-placeholder::before{content:"";position:absolute;width:100%;height:100%;background:linear-gradient(45deg,transparent 49%,rgba(106,13,173,.1) 50%,transparent 51%),linear-gradient(-45deg,transparent 49%,rgba(106,13,173,.1) 50%,transparent 51%);background-size:20px 20px}
+.qrcode-desc{margin-top:15px;font-size:14px;color:#666}
 
-    .message {
-      font-size: 16px;
-      text-align: justify;
-      margin-bottom: 18px;
-      text-indent: 2em;
-    }
+/* ===== 8. 结尾 & 底部 ===== */
+.closing{text-align:center;margin:35px 0 25px;color:#666}
+.closing p{margin-bottom:10px}
+.signature{margin-top:20px;font-weight:bold;color:#6a0dad;font-size:18px;position:relative;display:inline-block;padding:0 15px}
+.signature::after,.signature::before{content:"✦";margin:0 10px;color:#e67e22}
+.footer{background:linear-gradient(135deg,#6a0dad 0%,#8a2be2 100%);color:#fff;text-align:center;padding:25px 20px;font-size:14px;position:relative;overflow:hidden}
+.footer::before{content:"";position:absolute;top:-20px;left:0;width:100%;height:20px;background:rgba(255,255,255,.1);border-radius:50% 50% 0 0}
 
-    .highlight {
-      color: #e67e22;
-      font-weight: bold;
-    }
+/* ===== 9. 装饰元素 ===== */
+.decoration{position:absolute;z-index:1}
+.moon{top:20px;right:20px;width:60px;height:60px;background:#ffd700;border-radius:50%;box-shadow:0 0 20px rgba(255,215,0,.7);opacity:.9}
+.star{background:#fff;border-radius:50%;box-shadow:0 0 10px #fff;animation:twinkle 3s infinite alternate}
+.star1{top:15%;left:10%;width:4px;height:4px;animation-delay:.5s}
+.star2{top:25%;right:15%;width:3px;height:3px;animation-delay:1s}
+.star3{bottom:30%;left:20%;width:5px;height:5px;animation-delay:1.5s}
+.star4{bottom:20%;right:10%;width:4px;height:4px;animation-delay:2s}
+@keyframes twinkle{0%{opacity:.3}100%{opacity:1}}
 
-    .event-info {
-      background: #f9f5ff;
-      border: 1px solid #e0d6f5;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 30px 0;
-    }
+/* ===== 10. 返回顶部 ===== */
+#topBtn{position:fixed;bottom:20px;right:20px;background:#6a0dad;color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25);opacity:0;transition:.3s;z-index:100}
+#topBtn.show{opacity:1}
 
-    .info-title {
-      font-size: 18px;
-      color: #6a0dad;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-    }
-
-    .info-title i {
-      margin-right: 10px;
-    }
-
-    .date, .location {
-      font-size: 16px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-    }
-
-    .date i, .location i {
-      margin-right: 10px;
-      color: #6a0dad;
-    }
-
-    .reminder {
-      background: #fff9e6;
-      border: 1px solid #ffd966;
-      border-radius: 12px;
-      padding: 18px;
-      margin: 25px 0;
-    }
-
-    .reminder-title {
-      font-size: 16px;
-      color: #e67e22;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-    }
-
-    .qrcode-section {
-      text-align: center;
-      margin: 35px 0;
-      padding: 25px 20px;
-      background: #f9f5ff;
-      border-radius: 15px;
-    }
-
-    .qrcode-placeholder {
-      width: 200px;
-      height: 200px;
-      margin: 0 auto;
-      background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 10px;
-      color: #999;
-      font-size: 14px;
-      border: 1px dashed #ccc;
-    }
-
-    .footer {
-      background: linear-gradient(135deg, #6a0dad 0%, #8a2be2 100%);
-      color: white;
-      padding: 25px 20px;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    @media (max-width: 480px) {
-      .title {
-        font-size: 20px;
-      }
-      .subtitle {
-        font-size: 14px;
-      }
-      .message {
-        font-size: 15px;
-      }
-      .qrcode-placeholder {
-        width: 180px;
-        height: 180px;
-      }
-    }
-  </style>
+/* ===== 11. 响应式 ===== */
+@media(max-width:480px){
+.title{font-size:20px}.subtitle{font-size:14px}.message{font-size:15px}
+.qrcode-placeholder{width:180px;height:180px}.content{padding:25px 20px}
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1 class="title">【07C班级聚会邀约】</h1>
-      <p class="subtitle">中秋暖未散，07C邀您"续团圆"啦！</p>
-      <p class="subtitle">清华E十八载同窗，07C第三轮共话</p>
-    </div>
 
-    <div class="content">
+<!-- 加载动画 -->
+<div class="loader" id="loader"></div>
+
+<div class="container">
+  <!-- 装饰 -->
+  <div class="decoration moon"></div>
+  <div class="decoration star star1"></div>
+  <div class="decoration star star2"></div>
+  <div class="decoration star star3"></div>
+  <div class="decoration star star4"></div>
+
+
+  <!-- 头部 -->
+  <header class="header">
+    <h1 class="title">【07C班级聚会邀约】</h1>
+    <p class="subtitle">中秋暖未散，07C邀您"续团圆"啦！</p>
+    <p class="subtitle">清华E十八载同窗，07C第三轮共话</p>
+  </header>
+
+  <!-- 主体 -->
+  <main class="content">
+    <div class="greeting">
       <p class="salutation">- 07C班2025年主题班会邀请 -</p>
-      <p class="message">亲爱的柳老师，同学们：</p>
-      <p class="message">中秋的月光刚为阖家团圆镀上暖意，我们便循着这份"团圆"的心意，向每一位07C同学发出2025年班会邀约—<span class="highlight">2025年11月14日-16日</span>，07C的同学们将相聚<span class="highlight">深圳</span>，心系大湾区，共叙同学情。</p>
-
-      <div class="event-info">
-        <div class="info-title"><i class="fas fa-calendar-alt"></i> 活动信息</div>
-        <div class="date"><i class="far fa-clock"></i> 2025年11月14日-16日（共三天）</div>
-        <div class="location"><i class="fas fa-map-marker-alt"></i> 深圳 · 大湾区</div>
-      </div>
-
-      <div class="reminder">
-        <div class="reminder-title"><i class="fas fa-info-circle"></i> 温馨提示</div>
-        <div>从本轮开始，遵循新活动规则，本次班级活动，酒店和机票由同学自负，其他团体费用由组委会支付。</div>
-      </div>
-
-      <div class="qrcode-section">
-        <div class="qrcode-title"><i class="fas fa-qrcode"></i> 扫描二维码报名</div>
-        <div class="qrcode-placeholder">07C班级聚会报名表</div>
-        <p>请于10月15日前完成报名</p>
-      </div>
-
-      <p class="message">11月14日，让我们相聚深圳，延续中秋团圆的暖意，共同为07C班的建设谏言建议。期待与您相见！</p>
-
-      <div style="text-align:center; margin-top:30px;">
-        <p>清华E 07C班委会</p>
-        <p>2025年10月</p>
-        <p style="color:#6a0dad; font-weight:bold;">心系大湾区 · 共叙同学情</p>
-      </div>
     </div>
 
-    <div class="footer">
-      <p>清华E 07C班 · 十八载同窗情</p>
-      <p>期待与您在深圳相聚！</p>
+    <p class="message">亲爱的柳老师，同学们：</p>
+    <p class="message">中秋的月光刚为阖家团圆镀上暖意，我们便循着这份"团圆"的心意，向每一位07C同学发出2025年班会邀约—<span class="highlight">2025年11月14日-16日</span>，07C的同学们将相聚<span class="highlight">深圳</span>，心系大湾区，共叙同学情。在此，我们向07C班的每一位同学，发出最诚挚的邀请，期盼与您在这次班会上重续团圆之喜！</p>
+    <p class="message">活动期间，我们精心筹备了多个特色环节，旨在为07C同学提供一个重逢、交流与话新的机会，通过为期三天的系列活动，重温同窗情，共享人生路。</p>
+
+    <div class="event-info">
+      <div class="info-title"><i>📅</i> 活动信息</div>
+      <div class="date"><i>⏰</i> 2025年11月14日-16日（共三天）</div>
+      <div class="location"><i>📍</i> 深圳 · 大湾区</div>
     </div>
-  </div>
+
+    <p class="message">每一位同学，都蕴藏着对07C班的独家记忆。请扫描下方二维码，填写07C班2025班级聚会报名表。</p>
+
+    <div class="reminder">
+      <div class="reminder-title"><i>💡</i> 温馨提示</div>
+      <div class="reminder-detail">从本轮开始，遵循新活动规则，本次班级活动，酒店和机票由同学自负，其他团体费用由组委会支付。</div>
+    </div>
+
+    <div class="qrcode-section">
+      <div class="qrcode-title"><i>📲</i> 扫描二维码报名</div>
+      <div class="qrcode-placeholder">07C班级聚会报名表</div>
+      <p class="qrcode-desc">请于10月15日前完成报名</p>
+    </div>
+
+    <p class="message">11月14日，让我们相聚深圳，延续中秋团圆的暖意，共同为07C班的建设谏言建议。期待与您相见！</p>
+
+    <div class="closing">
+      <p>清华E 07C班委会</p>
+      <p>2025年10月</p>
+      <p class="signature">心系大湾区 · 共叙同学情</p>
+    </div>
+  </main>
+
+  <!-- 底部 -->
+  <footer class="footer">
+    <p>清华E 07C班 · 十八载同窗情</p>
+    <p>期待与您在深圳相聚！</p>
+  </footer>
+</div>
+
+<!-- 返回顶部 -->
+<button id="topBtn" title="返回顶部">▲</button>
+
+<script>
+// 1. 加载完成后隐藏动画
+window.addEventListener('load',()=>document.getElementById('loader').classList.add('hide'));
+
+// 2. 返回顶部按钮显隐 & 点击
+const topBtn=document.getElementById('topBtn');
+window.onscroll=()=>{topBtn.classList.toggle('show',document.documentElement.scrollTop>200)};
+topBtn.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+</script>
 </body>
 </html>
