@@ -34,7 +34,7 @@
     .header {
       background: linear-gradient(135deg, #d10000 0%, #ff6b00 100%);
       color: white;
-      padding: 40px 20px 30px;
+      padding: 40px 20px 35px;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -62,21 +62,14 @@
       height: 100px;
     }
 
-    .title {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      position: relative;
-      z-index: 1;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-    }
-
     .subtitle {
-      font-size: 16px;
+      font-size: 27px;
       opacity: 0.9;
       position: relative;
       z-index: 1;
       margin-bottom: 5px;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
     }
 
     .content {
@@ -310,27 +303,11 @@
       width: 200px;
       height: 200px;
       margin: 0 auto;
-      background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 10px;
-      color: #999;
-      font-size: 14px;
       border: 1px dashed #ccc;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .qrcode-placeholder::before {
-      content: "";
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background:
-        linear-gradient(45deg, transparent 49%, rgba(209, 0, 0, 0.1) 50%, transparent 51%),
-        linear-gradient(-45deg, transparent 49%, rgba(209, 0, 0, 0.1) 50%, transparent 51%);
-      background-size: 20px 20px;
     }
 
     .qrcode-desc {
@@ -351,21 +328,15 @@
       margin-bottom: 10px;
     }
 
-    .signature {
-      margin-top: 20px;
-      font-weight: bold;
-      color: #d10000;
-      font-size: 18px;
-      position: relative;
-      display: inline-block;
-      padding: 0 15px;
+    .committee-members {
+      margin: 20px 0;
+      font-size: 15px;
+      line-height: 1.8;
     }
 
-    .signature::before,
-    .signature::after {
-      content: "◆";
-      margin: 0 10px;
-      color: #ff6b00;
+    .contact-info {
+      margin: 20px 0;
+      font-size: 15px;
     }
 
     .footer {
@@ -429,11 +400,12 @@
     }
 
     @media (max-width: 480px) {
-      .title { font-size: 20px; }
-      .subtitle { font-size: 14px; }
+      .subtitle { font-size: 20px; }
       .message { font-size: 15px; }
       .qrcode-placeholder { width: 180px; height: 180px; }
       .content { padding: 25px 20px; }
+      .committee-members { font-size: 14px; }
+      .contact-info { font-size: 14px; }
     }
   </style>
 </head>
@@ -446,8 +418,6 @@
     <div class="tsinghua-badge">清华</div>
 
     <div class="header">
-      <h1 class="title">【07C班级聚会邀约】</h1>
-      <p class="subtitle">中秋暖未散，07C邀您"续团圆"啦！</p>
       <p class="subtitle">清华E十八载同窗，07C第三轮共话</p>
     </div>
 
@@ -456,7 +426,6 @@
         <p class="salutation">— 07C班2025年深圳主题班会邀请 —</p>
       </div>
 
-      <p class="message">亲爱的柳老师、各位同学：</p>
       <p class="message">中秋的月光刚刚为阖家团圆镀上暖意，我们便循着这份"团圆"的心意，向每一位07C同学发出2025年主题班会的诚挚邀约！</p>
 
       <div class="time-location">
@@ -472,7 +441,7 @@
         <ul class="section-list">
           <li><i class="fas fa-heart"></i> 重温同窗情谊，分享人生精彩。</li>
           <li><i class="fas fa-chart-line"></i> 围绕大湾区发展，共同探讨新机遇。</li>
-          <li><i class="fas fa-users"></i> 凝聚班级力量，为07C班的未来建设谏言献策。</li>
+          <li><i class="fas fa-users"></i> 凝聚班级力量，为07C班的未来建设建言献策。</li>
         </ul>
       </div>
 
@@ -489,29 +458,33 @@
         <div class="qrcode-title">扫描此处二维码报名</div>
         <div class="qrcode-container">
           <div class="qrcode-item">
-            <img src="https://raw.gitmirror.com/namegoodone/07C-2025/main/QRCODE.jpg" alt="07C班2025班级聚会报名表" class="qrcode-placeholder" style="width:200px;height:200px;border-radius:10px;border:1px dashed #ccc;">
-            <p class="qrcode-desc">请扫描二维码完成报名</p>
+            <img src="https://raw.gitmirror.com/namegoodone/07C-2025/main/QRCODE.jpg" alt="07C班2025班级聚会报名表" class="qrcode-placeholder">
           </div>
         </div>
+        <p class="qrcode-desc">请扫描二维码完成报名</p>
       </div>
 
       <p class="message">11月14日，让我们相聚在活力之城深圳，延续中秋团圆的暖意。期待与您相见，共创07C班又一个难忘的记忆！</p>
 
       <div class="closing">
         <p>07C 2025班级聚会组委会 敬邀</p>
-        <p class="signature">心系大湾区·共叙同学情</p>
+        <div class="committee-members">
+          柳松老师 张守启 杨绪 陈斌 李伟 刘増利 齐文胜 髙峰 武建邺 刘艳梅 黄朝眀
+        </div>
+        <div class="contact-info">
+          联系电话: 13803777290；18604730999；13801060718；13910182350；13003912133
+        </div>
       </div>
     </div>
 
     <div class="footer">
-      <p>清华E 07C班 · 十八载同窗情</p>
       <p>期待与您在深圳相聚！</p>
     </div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      const title = document.querySelector('.title');
+      const title = document.querySelector('.subtitle');
       title.addEventListener('click', function () {
         this.style.transform = 'scale(1.05)';
         setTimeout(() => {
