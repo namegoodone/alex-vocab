@@ -17,10 +17,17 @@
             color:#333;line-height:1.6;padding:10px;min-height:100vh;
         }
         .container{
-            max-width:750px;margin:0 auto;background:rgba(255,255,255,.95);
-            border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.2);
-            position:relative;
-        }
+    max-width:750px;margin:0 auto;
+    /* ========= 新背景图 ========= */
+    background:url("https://raw.gitmirror.com/namegoodone/07C-2025/main/background.png") center/cover no-repeat;
+    /* 加一层 15% 的黑色遮罩，保证文字任何时候都看得见 */
+    background-blend-mode:multiply;
+    box-shadow:inset 0 0 0 2000px rgba(0,0,0,.15);
+    /* ================================= */
+    border-radius:20px;overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+    position:relative;
+}
         .header{
             background:linear-gradient(135deg,#6a0dad 0%,#8a2be2 100%);
             color:#fff;padding:40px 20px 30px;text-align:center;position:relative;overflow:hidden;
@@ -190,7 +197,8 @@
                     </div>
                 </div>
             </div>
-
+            <br>   <!-- 空出一行 -->
+            <br>   <!-- 空出一行 -->
             <p class="message">11月14日，让我们相聚在活力之城深圳，延续中秋团圆的暖意。期待与您相见，共创07C班又一个难忘的记忆！</p>
 
             <div class="closing">
