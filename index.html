@@ -10,18 +10,15 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #f4f7fa; 
         }
-        /* 单词字体优化：适中的粗细与间距 */
-        .word-display {
-            font-weight: 700;
-            letter-spacing: 0.025em;
-            color: #1a202c;
-        }
+        .word-display { font-weight: 700; letter-spacing: 0.025em; color: #1a202c; }
         .option-btn { transition: all 0.2s ease; border-width: 1px; }
         .option-btn:hover:not(:disabled) { border-color: #6366f1; background-color: #f8faff; transform: translateY(-1px); }
         .correct { background-color: #f0fdf4 !important; border-color: #22c55e !important; color: #166534 !important; font-weight: 600; }
         .wrong { background-color: #fef2f2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
         .loader { border-top-color: #6366f1; animation: spinner 1s linear infinite; }
         @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* 朗读按钮动画 */
+        .speaker-btn:active { transform: scale(0.9); }
     </style>
 </head>
 <body class="min-h-screen py-10 px-4 flex items-center justify-center">
@@ -31,7 +28,7 @@
         <div class="bg-indigo-600 p-8 text-white flex justify-between items-center">
             <div>
                 <h1 class="text-3xl font-bold tracking-tight italic">Vocab Master AI</h1>
-                <p class="text-xs text-indigo-200 mt-1 uppercase tracking-[0.2em] font-bold opacity-90">TEM-8 & GRE Dual Mode</p>
+                <p class="text-xs text-indigo-200 mt-1 uppercase tracking-[0.2em] font-bold opacity-90">TEM-8 & GRE 智能版</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="fetchNewWords()" id="ai-gen-btn" class="bg-white/20 hover:bg-white/30 backdrop-blur-md px-6 py-2.5 rounded-2xl text-sm font-bold transition border border-white/10">
@@ -61,7 +58,7 @@
         <div class="p-10 md:p-14">
             <div id="loading-overlay" class="hidden flex flex-col items-center py-20">
                 <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-100 h-14 w-14 mb-4"></div>
-                <p class="text-indigo-600 font-bold">DeepSeek 正在为您命题...</p>
+                <p class="text-indigo-600 font-bold">正在检测并过滤重复词汇...</p>
             </div>
 
             <div id="quiz-container">
@@ -70,7 +67,14 @@
                     <span class="text-[10px] text-gray-300 font-bold uppercase tracking-widest">Retention: <span id="q-next" class="text-indigo-400">STAGE 0</span></span>
                 </div>
 
-                <h2 id="q-word" class="word-display text-6xl mb-8">------</h2>
+                <div class="flex items-center gap-6 mb-8">
+                    <h2 id="q-word" class="word-display text-6xl">------</h2>
+                    <button onclick="speak()" class="speaker-btn p-3 bg-gray-100 rounded-full hover:bg-indigo-100 text-indigo-600 transition-colors" title="播放发音">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        </svg>
+                    </button>
+                </div>
                 
                 <div class="bg-gray-50/80 p-7 rounded-[2rem] mb-12 border-l-8 border-indigo-500 shadow-inner">
                     <p id="q-sentence" class="text-xl text-gray-600 italic leading-relaxed font-medium">"..."</p>
@@ -84,18 +88,18 @@
                         <p id="fb-text" class="text-2xl font-bold text-gray-800"></p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div class="grid grid-cols-1 gap-8 mb-8">
                         <div>
-                            <p class="text-[10px] text-indigo-400 font-black uppercase mb-2 tracking-widest">中文释义</p>
-                            <p id="fb-cn" class="text-gray-800 text-lg font-bold leading-tight"></p>
+                            <p class="text-[11px] text-indigo-400 font-black uppercase mb-2 tracking-widest">中文释义</p>
+                            <p id="fb-cn" class="text-gray-800 text-xl font-bold leading-tight"></p>
                         </div>
                         <div>
-                            <p class="text-[10px] text-indigo-400 font-black uppercase mb-2 tracking-widest">English Definition</p>
-                            <p id="fb-en" class="text-gray-500 text-sm italic leading-relaxed"></p>
+                            <p class="text-[11px] text-indigo-400 font-black uppercase mb-2 tracking-widest">English Definition (放大版)</p>
+                            <p id="fb-en" class="text-gray-600 text-lg italic leading-relaxed font-medium"></p>
                         </div>
                     </div>
 
-                    <button onclick="renderNext()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold hover:bg-indigo-700 transition shadow-xl shadow-indigo-100 active:scale-95">
+                    <button onclick="renderNext()" class="w-full bg-indigo-600 text-white py-5 rounded-2xl font-bold hover:bg-indigo-700 transition shadow-xl shadow-indigo-100 active:scale-95">
                         掌握了，下一题
                     </button>
                 </div>
@@ -104,9 +108,9 @@
             <div id="empty-state" class="hidden text-center py-20">
                 <div class="text-8xl mb-8">🎯</div>
                 <h3 class="text-3xl font-bold text-gray-900">今日任务达成！</h3>
-                <p class="text-gray-400 mt-4 text-lg">暂无待复习词汇，快去请 AI 增加难度吧。</p>
-                <button onclick="fetchNewWords()" class="mt-10 px-10 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-2xl shadow-indigo-200">
-                    立即扩充 5 个单词
+                <p class="text-gray-400 mt-4 text-lg">当前没有待复习的词汇。</p>
+                <button onclick="fetchNewWords()" class="mt-10 px-10 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-2xl">
+                    获取 5 个新单词
                 </button>
             </div>
         </div>
@@ -116,7 +120,6 @@
         const API_KEY = 'sk-0c7ad30471a84d39a9923603114041e3';
         const API_URL = 'https://api.deepseek.com/chat/completions';
 
-        // 基础词库：规范 type 字段
         const baseWords = [
             { word: "lugubrious", options: ["欢快的", "冗长的", "悲哀的", "简洁的"], answer: 2, type: "TEM-8", sentence: "The ____ melody of the cello perfectly captured the mood of the funeral scene.", meaning_cn: "悲哀的，忧郁的", meaning_en: "Looking or sounding sad and dismal." }
         ];
@@ -129,11 +132,21 @@
 
         function init() { buildQueue(); updateStats(); renderNext(); }
 
+        // 发音功能 (Web Speech API)
+        function speak() {
+            const word = document.getElementById('q-word').innerText;
+            if (word === "------") return;
+            const msg = new SpeechSynthesisUtterance(word);
+            msg.lang = 'en-US';
+            msg.rate = 0.8; // 语速稍慢，适合学习
+            window.speechSynthesis.speak(msg);
+        }
+
         function buildQueue() {
             const allWords = [...baseWords, ...customBank];
             const now = Date.now();
             currentQueue = allWords.filter(w => {
-                const stat = progress[w.word];
+                const stat = progress[w.word.toLowerCase()];
                 if (!stat) return true;
                 if (stat.level >= INTERVALS.length - 1) return false;
                 return now >= stat.nextReview;
@@ -143,8 +156,8 @@
 
         async function fetchNewWords() {
             toggleLoading(true);
-            // 强化 Prompt，确保 type 字段只输出 TEM-8 或 GRE
-            const prompt = `你是一个英语教育专家。生成5个TEM-8或GRE级别单词。严格返回JSON数组。字段: word, options(4个), answer(0-3), type(必须是"TEM-8"或"GRE"), sentence, meaning_cn, meaning_en。干扰项要强。`;
+            const prompt = `你是一个高级英语词汇专家。请生成5个TEM-8或GRE级别单词。严格返回JSON数组。字段: word, options(4个), answer(0-3), type(必须是"TEM-8"或"GRE"), sentence, meaning_cn, meaning_en。`;
+            
             try {
                 const res = await fetch(API_URL, {
                     method: 'POST',
@@ -155,10 +168,20 @@
                 let text = data.choices[0].message.content.trim();
                 const jsonMatch = text.match(/\[.*\]/s);
                 const newWords = JSON.parse(jsonMatch[0]);
-                customBank = [...customBank, ...newWords];
+
+                // --- 智能去重逻辑 ---
+                const existingWords = new Set([...baseWords, ...customBank].map(w => w.word.toLowerCase()));
+                const filteredNewWords = newWords.filter(nw => !existingWords.has(nw.word.toLowerCase()));
+
+                if (filteredNewWords.length === 0) {
+                    console.warn("本次生成的单词全部重复，正在尝试重新获取...");
+                    return fetchNewWords(); // 递归获取直到有新词
+                }
+
+                customBank = [...customBank, ...filteredNewWords];
                 localStorage.setItem('deepseek_bank', JSON.stringify(customBank));
                 buildQueue(); renderNext(); updateStats();
-            } catch (e) { alert("AI 出题失败，请检查网络。"); } finally { toggleLoading(false); }
+            } catch (e) { alert("获取失败，请重试。"); } finally { toggleLoading(false); }
         }
 
         function renderNext() {
@@ -171,10 +194,12 @@
             const q = currentQueue[currentIndex];
             document.getElementById('q-word').innerText = q.word;
             document.getElementById('q-sentence').innerText = q.sentence;
-            // 确保显示的内容符合要求，若 AI 输出错误则默认显示为 GRE
-            const displayType = (q.type === 'TEM-8' || q.type === 'GRE' || q.type === 'TEM8') ? q.type.replace('8','-8') : 'GRE';
-            document.getElementById('q-type').innerText = displayType;
-            const stats = progress[q.word];
+            
+            // 标签修正逻辑
+            const rawType = q.type ? q.type.toUpperCase() : "GRE";
+            document.getElementById('q-type').innerText = rawType.includes("TEM") ? "TEM-8" : "GRE";
+            
+            const stats = progress[q.word.toLowerCase()];
             document.getElementById('q-next').innerText = stats ? `STAGE ${stats.level}` : 'STAGE 0';
             const grid = document.getElementById('options-grid');
             grid.innerHTML = '';
@@ -195,18 +220,18 @@
                 if (i === q.answer) b.classList.add('correct');
                 else if (i === idx) b.classList.add('wrong');
             });
-            let stat = progress[q.word] || { level: 0, nextReview: 0 };
+            let stat = progress[q.word.toLowerCase()] || { level: 0, nextReview: 0 };
             if (isCorrect) stat.level = Math.min(stat.level + 1, INTERVALS.length - 1);
             else stat.level = Math.max(0, stat.level - 1);
             stat.nextReview = Date.now() + INTERVALS[stat.level] * 60 * 1000;
-            progress[q.word] = stat;
+            progress[q.word.toLowerCase()] = stat;
             localStorage.setItem('vocab_progress', JSON.stringify(progress));
             
             const fb = document.getElementById('feedback');
             fb.classList.remove('hidden');
             fb.className = isCorrect ? "mt-12 p-8 rounded-[2rem] border-2 border-green-100 bg-green-50/30 block" : "mt-12 p-8 rounded-[2rem] border-2 border-red-100 bg-red-50/30 block";
             document.getElementById('fb-icon').innerText = isCorrect ? "✨" : "💡";
-            document.getElementById('fb-text').innerText = isCorrect ? "非常出色！" : "解析与回顾";
+            document.getElementById('fb-text').innerText = isCorrect ? "正确！继续保持" : "解析与记忆";
             document.getElementById('fb-cn').innerText = q.meaning_cn;
             document.getElementById('fb-en').innerText = q.meaning_en;
             currentIndex++; updateStats();
@@ -217,7 +242,10 @@
             document.getElementById('stat-total').innerText = allWords.length;
             let mastered = Object.values(progress).filter(p => p.level >= INTERVALS.length - 1).length;
             document.getElementById('stat-mastered').innerText = mastered;
-            const toRev = allWords.filter(w => { const s = progress[w.word]; return !s || (s.level < INTERVALS.length - 1 && Date.now() >= s.nextReview); }).length;
+            const toRev = allWords.filter(w => { 
+                const s = progress[w.word.toLowerCase()]; 
+                return !s || (s.level < INTERVALS.length - 1 && Date.now() >= s.nextReview); 
+            }).length;
             document.getElementById('stat-review').innerText = toRev;
         }
 
@@ -227,4 +255,3 @@
     </script>
 </body>
 </html>
-
