@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocab Master AI - 中英双解专业版</title>
+    <script src="https://cdn.staticfile.org/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <style>
+        /* 优化：移除 Google Fonts，改用系统默认高质量字体族，避免国内加载阻塞 */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background-color: #f8fafc;
+        }
+        .option-btn:disabled { cursor: not-allowed; opacity: 0.7; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: 600; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .loader { border-top-color: #6366f1; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="min-h-screen py-10 px-4">
+
+    <div id="app" class="max-w-3xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+
+        <div class="bg-indigo-700 p-6 text-white flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight">Vocab Master AI</h1>
+                <p class="text-xs text-indigo-200 mt-1 uppercase tracking-widest">TEM-8 & GRE Dual Mode</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="fetchNewWords()" id="ai-gen-btn" class="bg-indigo-500 hover:bg-indigo-400 px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2">
+                    <span id="gen-text">AI 扩充词库</span>
+                </button>
+                <button onclick="resetAll()" class="bg-red-500 hover:bg-red-400 p-2 rounded-xl transition" title="重置进度">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-px bg-indigo-100">
+            <div class="bg-white p-4 text-center">
+                <p class="text-[10px] text-gray-400 uppercase font-bold mb-1">待复习</p>
+                <p id="stat-review" class="text-2xl font-bold text-indigo-600">0</p>
+            </div>
+            <div class="bg-white p-4 text-center">
+                <p class="text-[10px] text-gray-400 uppercase font-bold mb-1">已掌握</p>
+                <p id="stat-mastered" class="text-2xl font-bold text-green-600">0</p>
+            </div>
+            <div class="bg-white p-4 text-center">
+                <p class="text-[10px] text-gray-400 uppercase font-bold mb-1">总词量</p>
+                <p id="stat-total" class="text-2xl font-bold text-gray-700">0</p>
+            </div>
+        </div>
+
+        <div class="p-8">
+            <div id="loading-overlay" class="hidden flex flex-col items-center py-12">
+                <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-100 h-12 w-12 mb-4"></div>
+                <p class="text-gray-500 font-medium">DeepSeek 正在为您精准命题...</p>
+            </div>
+
+            <div id="quiz-container">
+                <div class="flex items-center justify-between mb-6">
+                    <span id="q-type" class="px-3 py-1 bg-orange-100 text-orange-700 text-[10px] font-black rounded-full uppercase">GRE</span>
+                    <span class="text-[10px] text-gray-400 font-mono tracking-tighter">RETENTION: <span id="q-next" class="text-indigo-500">INIT</span></span>
+                </div>
+
+                <h2 id="q-word" class="text-5xl font-black text-gray-900 mb-4 tracking-tighter">------</h2>
+                <div class="bg-gray-50 p-5 rounded-2xl mb-8 border-l-4 border-indigo-400">
+                    <p id="q-sentence" class="text-lg text-gray-700 italic leading-relaxed">"..."</p>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+                <div id="feedback" class="mt-8 p-6 rounded-3xl hidden shadow-inner border border-gray-100">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span id="fb-icon" class="text-2xl"></span>
+                        <p id="fb-text" class="text-xl font-bold"></p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-[10px] text-indigo-400 font-black uppercase mb-1">Chinese Meaning</p>
+                            <p id="fb-cn" class="text-gray-800 font-medium"></p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-indigo-400 font-black uppercase mb-1">English Definition</p>
+                            <p id="fb-en" class="text-gray-600 text-sm italic"></p>
+                        </div>
+                    </div>
+
+                    <button onclick="renderNext()" class="mt-8 w-full bg-indigo-700 text-white py-4 rounded-2xl font-bold hover:bg-indigo-800 transition shadow-lg shadow-indigo-100 active:scale-[0.98]">
+                        掌握了，下一题
+                    </button>
+                </div>
+            </div>
+
+            <div id="empty-state" class="hidden text-center py-12">
+                <div class="text-6xl mb-6">🌟</div>
+                <h3 class="text-2xl font-bold text-gray-800">完成复习任务！</h3>
+                <p class="text-gray-400 mt-2">暂无待复习词汇，让 AI 为您新增一些吧。</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /** 配置 API **/
+        const API_KEY = 'sk-0c7ad30471a84d39a9923603114041e3';
+        const API_URL = 'https://api.deepseek.com/chat/completions';
+
+        const baseWords = [
+            { word: "Capricious", options: ["反复无常的", "坚定的", "慷慨的", "沉默的"], answer: 0, type: "GRE", sentence: "The court's decision was ______, lacking any clear logical basis.", meaning_cn: "反复无常的；变幻莫测的", meaning_en: "Given to sudden and unaccountable changes of mood or behavior." }
+        ];
+
+        const INTERVALS = [0, 5, 30, 720, 1440, 2880, 5760, 10080];
+
+        let customBank = JSON.parse(localStorage.getItem('deepseek_bank')) || [];
+        let progress = JSON.parse(localStorage.getItem('vocab_progress')) || {};
+        let currentQueue = [];
+        let currentIndex = 0;
+
+        function init() {
+            buildQueue();
+            updateStats();
+            renderNext();
+        }
+
+        function buildQueue() {
+            const allWords = [...baseWords, ...customBank];
+            const now = Date.now();
+
+            currentQueue = allWords.filter(w => {
+                const stat = progress[w.word];
+                if (!stat) return true;
+                if (stat.level >= INTERVALS.length - 1) return false;
+                return now >= stat.nextReview;
+            }).sort(() => Math.random() - 0.5);
+
+            currentIndex = 0;
+        }
+
+        async function fetchNewWords() {
+            toggleLoading(true);
+            const prompt = `你是一个高级英语词汇专家，擅长TEM-8和GRE培训。请生成5个高难度词汇测试题。
+            要求：
+            1. 严格返回一个 JSON 数组，不含 Markdown 标签。
+            2. 字段：word, options(4个中文选项), answer(索引0-3), type(GRE/TEM8), sentence(含____), meaning_cn(中文释义), meaning_en(英文定义)。
+            3. 干扰项必须具有高度迷惑性。`;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "deepseek-chat",
+                        messages: [{role: "system", content: "You are a vocabulary test generator. Output raw JSON only."}, {role: "user", content: prompt}],
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await res.json();
+                if(data.error) throw new Error(data.error.message);
+
+                let text = data.choices[0].message.content.trim();
+                const jsonMatch = text.match(/\[.*\]/s);
+                if (!jsonMatch) throw new Error("无法解析 AI 返回的 JSON 格式");
+                const newWords = JSON.parse(jsonMatch[0]);
+
+                customBank = [...customBank, ...newWords];
+                localStorage.setItem('deepseek_bank', JSON.stringify(customBank));
+
+                buildQueue();
+                renderNext();
+                updateStats();
+            } catch (e) {
+                console.error(e);
+                alert("AI 出题失败：" + e.message);
+            } finally {
+                toggleLoading(false);
+            }
+        }
+
+        function renderNext() {
+            const container = document.getElementById('quiz-container');
+            const empty = document.getElementById('empty-state');
+            const feedback = document.getElementById('feedback');
+            feedback.classList.add('hidden');
+
+            if (currentIndex >= currentQueue.length) {
+                container.classList.add('hidden');
+                empty.classList.remove('hidden');
+                updateStats();
+                return;
+            }
+
+            container.classList.remove('hidden');
+            empty.classList.add('hidden');
+
+            const q = currentQueue[currentIndex];
+            document.getElementById('q-word').innerText = q.word;
+            document.getElementById('q-sentence').innerText = q.sentence;
+            document.getElementById('q-type').innerText = q.type;
+            const stats = progress[q.word];
+            document.getElementById('q-next').innerText = stats ? `STAGE ${stats.level}` : 'FRESH';
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-5 border-2 border-gray-100 rounded-2xl hover:border-indigo-500 hover:bg-indigo-50 transition-all font-medium text-gray-700 bg-white";
+                btn.innerText = opt;
+                btn.onclick = () => handleAnswer(idx, btn);
+                grid.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(idx, btn) {
+            const q = currentQueue[currentIndex];
+            const isCorrect = (idx === q.answer);
+            const btns = document.querySelectorAll('.option-btn');
+
+            btns.forEach((b, i) => {
+                b.disabled = true;
+                if (i === q.answer) b.classList.add('correct');
+                else if (i === idx) b.classList.add('wrong');
+            });
+
+            // 艾宾浩斯算法更新
+            let stat = progress[q.word] || { level: 0, nextReview: 0 };
+            if (isCorrect) stat.level = Math.min(stat.level + 1, INTERVALS.length - 1);
+            else stat.level = Math.max(0, stat.level - 1);
+            stat.nextReview = Date.now() + INTERVALS[stat.level] * 60 * 1000;
+            progress[q.word] = stat;
+            localStorage.setItem('vocab_progress', JSON.stringify(progress));
+
+            // UI 反馈显示
+            const fb = document.getElementById('feedback');
+            fb.classList.remove('hidden');
+            fb.className = isCorrect ? "mt-8 p-6 rounded-3xl bg-green-50/50 border border-green-100" : "mt-8 p-6 rounded-3xl bg-red-50/50 border border-red-100";
+            document.getElementById('fb-icon').innerText = isCorrect ? "✅" : "❌";
+            document.getElementById('fb-text').innerText = isCorrect ? "Bingo!" : "Incorrect";
+            document.getElementById('fb-text').className = isCorrect ? "text-xl font-bold text-green-700" : "text-xl font-bold text-red-700";
+
+            // 中英双解显示
+            document.getElementById('fb-cn').innerText = q.meaning_cn;
+            document.getElementById('fb-en').innerText = q.meaning_en;
+
+            currentIndex++;
+            updateStats();
+        }
+
+        function updateStats() {
+            const allWords = [...baseWords, ...customBank];
+            document.getElementById('stat-total').innerText = allWords.length;
+            let mastered = 0;
+            Object.values(progress).forEach(p => { if(p.level >= INTERVALS.length - 1) mastered++; });
+            document.getElementById('stat-mastered').innerText = mastered;
+            const now = Date.now();
+            const toRev = allWords.filter(w => {
+                const s = progress[w.word];
+                return !s || (s.level < INTERVALS.length - 1 && now >= s.nextReview);
+            }).length;
+            document.getElementById('stat-review').innerText = toRev;
+        }
+
+        function toggleLoading(show) {
+            document.getElementById('loading-overlay').classList.toggle('hidden', !show);
+            document.getElementById('quiz-container').classList.toggle('hidden', show);
+            document.getElementById('ai-gen-btn').disabled = show;
+        }
+
+        function resetAll() {
+            if(confirm("确定清除所有本地学习进度吗？")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
