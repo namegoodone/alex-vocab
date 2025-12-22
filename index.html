@@ -3,52 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vocab Master AI - 视觉优化版</title>
+    <title>Vocab Master AI - 视觉精修版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* 使用系统默认高质量黑体，确保渲染清晰 */
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f2f5; 
+            background-color: #f4f7fa; 
         }
-        .option-btn { transition: all 0.2s ease; }
-        .option-btn:hover:not(:disabled) { transform: translateY(-1px); border-color: #6366f1; background-color: #f5f7ff; }
-        .correct { background-color: #f0fdf4 !important; border-color: #22c55e !important; color: #166534 !important; }
+        /* 单词字体优化：适中的粗细与间距 */
+        .word-display {
+            font-weight: 700;
+            letter-spacing: 0.025em;
+            color: #1a202c;
+        }
+        .option-btn { transition: all 0.2s ease; border-width: 1px; }
+        .option-btn:hover:not(:disabled) { border-color: #6366f1; background-color: #f8faff; transform: translateY(-1px); }
+        .correct { background-color: #f0fdf4 !important; border-color: #22c55e !important; color: #166534 !important; font-weight: 600; }
         .wrong { background-color: #fef2f2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
         .loader { border-top-color: #6366f1; animation: spinner 1s linear infinite; }
         @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="min-h-screen py-12 px-4 flex items-center justify-center">
+<body class="min-h-screen py-10 px-4 flex items-center justify-center">
 
-    <div id="app" class="w-full max-w-4xl bg-white rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden border border-gray-100">
+    <div id="app" class="w-full max-w-4xl bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] overflow-hidden border border-gray-100">
 
         <div class="bg-indigo-600 p-8 text-white flex justify-between items-center">
             <div>
-                <h1 class="text-2xl font-bold tracking-tight">Vocab Master AI</h1>
-                <p class="text-xs text-indigo-200 mt-1 uppercase tracking-widest font-semibold opacity-80">TEM-8 & GRE Dual Mode</p>
+                <h1 class="text-3xl font-bold tracking-tight italic">Vocab Master AI</h1>
+                <p class="text-xs text-indigo-200 mt-1 uppercase tracking-[0.2em] font-bold opacity-90">TEM-8 & GRE Dual Mode</p>
             </div>
             <div class="flex gap-3">
-                <button onclick="fetchNewWords()" id="ai-gen-btn" class="bg-indigo-500/50 hover:bg-indigo-400 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-white/10">
-                    <span id="gen-text">AI 扩充词库</span>
+                <button onclick="fetchNewWords()" id="ai-gen-btn" class="bg-white/20 hover:bg-white/30 backdrop-blur-md px-6 py-2.5 rounded-2xl text-sm font-bold transition border border-white/10">
+                    AI 扩充词库
                 </button>
-                <button onclick="resetAll()" class="bg-red-500 hover:bg-red-400 p-2.5 rounded-xl transition shadow-lg shadow-red-500/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                <button onclick="resetAll()" class="bg-red-500 hover:bg-red-400 p-3 rounded-2xl transition shadow-lg shadow-red-900/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                 </button>
             </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-px bg-gray-100">
+        <div class="grid grid-cols-3 gap-px bg-gray-100 border-b border-gray-50">
             <div class="bg-white py-6 text-center">
-                <p class="text-[10px] text-gray-400 uppercase font-bold mb-1 tracking-widest">待复习</p>
+                <p class="text-[10px] text-gray-400 uppercase font-black mb-1 tracking-widest">待复习</p>
                 <p id="stat-review" class="text-3xl font-bold text-indigo-600">0</p>
             </div>
             <div class="bg-white py-6 text-center">
-                <p class="text-[10px] text-gray-400 uppercase font-bold mb-1 tracking-widest">已掌握</p>
+                <p class="text-[10px] text-gray-400 uppercase font-black mb-1 tracking-widest">已掌握</p>
                 <p id="stat-mastered" class="text-3xl font-bold text-emerald-500">0</p>
             </div>
             <div class="bg-white py-6 text-center">
-                <p class="text-[10px] text-gray-400 uppercase font-bold mb-1 tracking-widest">总词量</p>
+                <p class="text-[10px] text-gray-400 uppercase font-black mb-1 tracking-widest">总词量</p>
                 <p id="stat-total" class="text-3xl font-bold text-gray-700">0</p>
             </div>
         </div>
@@ -56,52 +61,52 @@
         <div class="p-10 md:p-14">
             <div id="loading-overlay" class="hidden flex flex-col items-center py-20">
                 <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-100 h-14 w-14 mb-4"></div>
-                <p class="text-gray-500 font-bold">DeepSeek AI 正在生成高质量题目...</p>
+                <p class="text-indigo-600 font-bold">DeepSeek 正在为您命题...</p>
             </div>
 
             <div id="quiz-container">
                 <div class="flex items-center justify-between mb-8">
-                    <span id="q-type" class="px-3 py-1 bg-orange-50 text-orange-600 text-[10px] font-black rounded-lg border border-orange-100 uppercase tracking-wider">GRE</span>
-                    <span class="text-[10px] text-gray-300 font-mono tracking-tighter uppercase">Retention: <span id="q-next" class="text-indigo-400">STAGE 0</span></span>
+                    <span id="q-type" class="px-4 py-1.5 bg-orange-50 text-orange-600 text-[11px] font-black rounded-full border border-orange-100 uppercase tracking-wider">GRE</span>
+                    <span class="text-[10px] text-gray-300 font-bold uppercase tracking-widest">Retention: <span id="q-next" class="text-indigo-400">STAGE 0</span></span>
                 </div>
 
-                <h2 id="q-word" class="text-6xl font-bold text-gray-900 mb-8 tracking-normal">------</h2>
+                <h2 id="q-word" class="word-display text-6xl mb-8">------</h2>
                 
-                <div class="bg-gray-50 p-6 rounded-2xl mb-12 border-l-4 border-indigo-500">
-                    <p id="q-sentence" class="text-xl text-gray-600 italic leading-relaxed">"..."</p>
+                <div class="bg-gray-50/80 p-7 rounded-[2rem] mb-12 border-l-8 border-indigo-500 shadow-inner">
+                    <p id="q-sentence" class="text-xl text-gray-600 italic leading-relaxed font-medium">"..."</p>
                 </div>
 
-                <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+                <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
 
-                <div id="feedback" class="mt-12 p-8 rounded-[1.5rem] hidden border-2 border-dashed">
+                <div id="feedback" class="mt-12 p-8 rounded-[2rem] hidden border-2 border-indigo-50 bg-indigo-50/20">
                     <div class="flex items-center gap-3 mb-6">
                         <span id="fb-icon" class="text-3xl"></span>
-                        <p id="fb-text" class="text-2xl font-bold"></p>
+                        <p id="fb-text" class="text-2xl font-bold text-gray-800"></p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                         <div>
-                            <p class="text-[10px] text-indigo-400 font-black uppercase mb-2 tracking-wider">中文释义</p>
-                            <p id="fb-cn" class="text-gray-800 text-lg font-bold"></p>
+                            <p class="text-[10px] text-indigo-400 font-black uppercase mb-2 tracking-widest">中文释义</p>
+                            <p id="fb-cn" class="text-gray-800 text-lg font-bold leading-tight"></p>
                         </div>
                         <div>
-                            <p class="text-[10px] text-indigo-400 font-black uppercase mb-2 tracking-wider">English Definition</p>
-                            <p id="fb-en" class="text-gray-600 text-sm italic leading-relaxed"></p>
+                            <p class="text-[10px] text-indigo-400 font-black uppercase mb-2 tracking-widest">English Definition</p>
+                            <p id="fb-en" class="text-gray-500 text-sm italic leading-relaxed"></p>
                         </div>
                     </div>
 
-                    <button onclick="renderNext()" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-[0.98]">
+                    <button onclick="renderNext()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold hover:bg-indigo-700 transition shadow-xl shadow-indigo-100 active:scale-95">
                         掌握了，下一题
                     </button>
                 </div>
             </div>
 
-            <div id="empty-state" class="hidden text-center py-16">
-                <div class="text-7xl mb-6">🎯</div>
-                <h3 class="text-2xl font-bold text-gray-800">复习已就绪</h3>
-                <p class="text-gray-400 mt-2">太棒了，目前没有待复习的词汇。</p>
-                <button onclick="fetchNewWords()" class="mt-8 px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition">
-                    立即获取 AI 新词
+            <div id="empty-state" class="hidden text-center py-20">
+                <div class="text-8xl mb-8">🎯</div>
+                <h3 class="text-3xl font-bold text-gray-900">今日任务达成！</h3>
+                <p class="text-gray-400 mt-4 text-lg">暂无待复习词汇，快去请 AI 增加难度吧。</p>
+                <button onclick="fetchNewWords()" class="mt-10 px-10 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-2xl shadow-indigo-200">
+                    立即扩充 5 个单词
                 </button>
             </div>
         </div>
@@ -111,8 +116,9 @@
         const API_KEY = 'sk-0c7ad30471a84d39a9923603114041e3';
         const API_URL = 'https://api.deepseek.com/chat/completions';
 
+        // 基础词库：规范 type 字段
         const baseWords = [
-            { word: "lugubrious", options: ["欢快的", "冗长的", "悲哀的", "简洁的"], answer: 2, type: "TEM8", sentence: "The ____ melody of the cello perfectly captured the mood of the funeral scene.", meaning_cn: "悲哀的，忧郁的", meaning_en: "Looking or sounding sad and dismal." }
+            { word: "lugubrious", options: ["欢快的", "冗长的", "悲哀的", "简洁的"], answer: 2, type: "TEM-8", sentence: "The ____ melody of the cello perfectly captured the mood of the funeral scene.", meaning_cn: "悲哀的，忧郁的", meaning_en: "Looking or sounding sad and dismal." }
         ];
 
         const INTERVALS = [0, 5, 30, 720, 1440, 2880, 5760, 10080];
@@ -137,12 +143,13 @@
 
         async function fetchNewWords() {
             toggleLoading(true);
-            const prompt = `生成5个TEM-8/GRE单词测试。字段: word, options(4个), answer(0-3), type, sentence(含____), meaning_cn, meaning_en。仅输出 JSON 数组。`;
+            // 强化 Prompt，确保 type 字段只输出 TEM-8 或 GRE
+            const prompt = `你是一个英语教育专家。生成5个TEM-8或GRE级别单词。严格返回JSON数组。字段: word, options(4个), answer(0-3), type(必须是"TEM-8"或"GRE"), sentence, meaning_cn, meaning_en。干扰项要强。`;
             try {
                 const res = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
-                    body: JSON.stringify({ model: "deepseek-chat", messages: [{role: "system", content: "You output JSON array only."}, {role: "user", content: prompt}] })
+                    body: JSON.stringify({ model: "deepseek-chat", messages: [{role: "system", content: "Output raw JSON array only."}, {role: "user", content: prompt}] })
                 });
                 const data = await res.json();
                 let text = data.choices[0].message.content.trim();
@@ -151,7 +158,7 @@
                 customBank = [...customBank, ...newWords];
                 localStorage.setItem('deepseek_bank', JSON.stringify(customBank));
                 buildQueue(); renderNext(); updateStats();
-            } catch (e) { alert("获取失败，请重试"); } finally { toggleLoading(false); }
+            } catch (e) { alert("AI 出题失败，请检查网络。"); } finally { toggleLoading(false); }
         }
 
         function renderNext() {
@@ -164,14 +171,16 @@
             const q = currentQueue[currentIndex];
             document.getElementById('q-word').innerText = q.word;
             document.getElementById('q-sentence').innerText = q.sentence;
-            document.getElementById('q-type').innerText = q.type;
+            // 确保显示的内容符合要求，若 AI 输出错误则默认显示为 GRE
+            const displayType = (q.type === 'TEM-8' || q.type === 'GRE' || q.type === 'TEM8') ? q.type.replace('8','-8') : 'GRE';
+            document.getElementById('q-type').innerText = displayType;
             const stats = progress[q.word];
             document.getElementById('q-next').innerText = stats ? `STAGE ${stats.level}` : 'STAGE 0';
             const grid = document.getElementById('options-grid');
             grid.innerHTML = '';
             q.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
-                btn.className = "option-btn w-full text-left p-6 border-2 border-gray-100 rounded-2xl font-medium text-gray-700 bg-white hover:shadow-sm";
+                btn.className = "option-btn w-full text-left p-6 border border-gray-100 rounded-[1.5rem] font-bold text-gray-700 bg-white text-lg";
                 btn.innerText = opt;
                 btn.onclick = () => handleAnswer(idx, btn);
                 grid.appendChild(btn);
@@ -192,11 +201,12 @@
             stat.nextReview = Date.now() + INTERVALS[stat.level] * 60 * 1000;
             progress[q.word] = stat;
             localStorage.setItem('vocab_progress', JSON.stringify(progress));
+            
             const fb = document.getElementById('feedback');
             fb.classList.remove('hidden');
-            fb.className = isCorrect ? "mt-12 p-8 rounded-[1.5rem] border-emerald-100 bg-emerald-50/30 block" : "mt-12 p-8 rounded-[1.5rem] border-red-100 bg-red-50/30 block";
+            fb.className = isCorrect ? "mt-12 p-8 rounded-[2rem] border-2 border-green-100 bg-green-50/30 block" : "mt-12 p-8 rounded-[2rem] border-2 border-red-100 bg-red-50/30 block";
             document.getElementById('fb-icon').innerText = isCorrect ? "✨" : "💡";
-            document.getElementById('fb-text').innerText = isCorrect ? "正确！" : "解析";
+            document.getElementById('fb-text').innerText = isCorrect ? "非常出色！" : "解析与回顾";
             document.getElementById('fb-cn').innerText = q.meaning_cn;
             document.getElementById('fb-en').innerText = q.meaning_en;
             currentIndex++; updateStats();
@@ -212,7 +222,7 @@
         }
 
         function toggleLoading(show) { document.getElementById('loading-overlay').classList.toggle('hidden', !show); document.getElementById('quiz-container').classList.toggle('hidden', show); }
-        function resetAll() { if(confirm("重置所有进度？")) { localStorage.clear(); location.reload(); } }
+        function resetAll() { if(confirm("确定清除所有进度吗？")) { localStorage.clear(); location.reload(); } }
         init();
     </script>
 </body>
